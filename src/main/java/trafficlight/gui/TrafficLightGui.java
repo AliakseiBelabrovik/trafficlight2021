@@ -85,7 +85,7 @@ public class TrafficLightGui extends JFrame implements ActionListener {
             }
              while (isAutoMode) {
                  //TODO call the controller
-
+                 trafficLightCtrl.nextState();
                 try {
                     if (yellow.isOn) {
                         Thread.sleep(yellowIntervall);
@@ -114,5 +114,50 @@ public class TrafficLightGui extends JFrame implements ActionListener {
 
     public void setLight(TrafficLightColor trafficLightColor){
         //TODO setLight
+
+        //thread to make the yellow light flash
+        Thread flashingYellowLight = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("I am in thread");
+                while (trafficLightCtrl.getCurrentState().getState() == TrafficLightColor.YELLOW) {
+                    System.out.println("I am in while loop");
+                    try {
+                        Thread.sleep(yellowIntervall);
+                        yellow.turnOn(false);
+                        Thread.sleep(yellowIntervall);
+                        yellow.turnOn(true);
+                    } catch (InterruptedException e) {
+                        //e.printStackTrace();
+                        System.out.println("Something went wring in the thread.");
+                        break;
+                    }
+
+                    if (trafficLightCtrl.getCurrentState().getState() != TrafficLightColor.YELLOW) {
+                        yellow.turnOn(false);
+                        System.out.println("I leave the thread 2");
+                        break;
+                    }
+                }
+            }
+        });
+
+        if (trafficLightColor == TrafficLightColor.YELLOW) {
+            red.turnOn(false);
+            green.turnOn(false);
+            yellow.turnOn(true);
+            //start thread to make the yellow light flash
+            flashingYellowLight.start();
+        } else if (trafficLightColor == TrafficLightColor.GREEN) {
+            yellow.turnOn(false);
+            green.turnOn(true);
+        } else if (trafficLightColor == TrafficLightColor.RED) {
+            yellow.turnOn(false);
+            red.turnOn(true);
+        }
+
+
+
+
     }
 }
