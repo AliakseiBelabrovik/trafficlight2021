@@ -125,9 +125,9 @@ public class TrafficLightGui extends JFrame implements ActionListener {
         Thread flashingYellowLight = new Thread(new Runnable() {
             @Override
             public void run() {
+
                 //as long as the color is yellow, make the light blink
                 while (trafficLightCtrl.getCurrentState().getState() == TrafficLightColor.YELLOW) {
-
                     try {
                         Thread.sleep(yellowIntervall);
                         yellow.turnOn(false);

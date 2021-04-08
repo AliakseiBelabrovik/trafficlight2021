@@ -40,8 +40,9 @@ public class TrafficlightCtrlTest {
     @Test
     @DisplayName("Test 1: Testing for original state")
     void testForOriginalState() {
-        Class expected = new Off(trafficLightCtrl).getClass();
-        assertEquals(expected, trafficLightCtrl.getCurrentState().getClass(),"The original " +
+        Class expected = Off.class;
+        Class actual = trafficLightCtrl.getCurrentState().getClass();
+        assertEquals(expected, actual,"The original " +
                 "state must be Off.");
     }
 
@@ -52,30 +53,33 @@ public class TrafficlightCtrlTest {
         trafficLightCtrl.setPreviousState(trafficLightCtrl.getYellowState()); //set previous state yellow
         trafficLightCtrl.nextState(); //change the state of the controller to the next one
 
-        Class expected = new Yellow(trafficLightCtrl).getClass();
+        State expected = trafficLightCtrl.getYellowState();
+        State actual = trafficLightCtrl.getCurrentState();
 
-        assertEquals(expected, trafficLightCtrl.getCurrentState().getClass(), "The current " +
+        assertEquals(expected, actual, "The current " +
                 "state after Green must be Yellow.");
     }
 
     @Test
-    @DisplayName("Test 3: Testing the red light after  yellow and its previous state green")
+    @DisplayName("Test 3: Testing the red light after yellow and its previous state green")
     void testYellowClass_Red() {
-        Class expected = new Red(trafficLightCtrl).getClass();
+        State expected = trafficLightCtrl.getRedState();
         trafficLightCtrl.setPreviousState(trafficLightCtrl.getGreenState());
         trafficLightCtrl.setCurrentState(trafficLightCtrl.getYellowState());
         trafficLightCtrl.nextState();
-        assertEquals(expected, trafficLightCtrl.getCurrentState().getClass());
+        State actual = trafficLightCtrl.getCurrentState();
+        assertEquals(expected, actual);
     }
 
     @Test
     @DisplayName("Test 4: Testing the red light after  yellow and its previous state green")
     void testYellowClass_Green() {
-        Class expected = new Green(trafficLightCtrl).getClass();
+        State expected = trafficLightCtrl.getGreenState();
         trafficLightCtrl.setPreviousState(trafficLightCtrl.getRedState());
         trafficLightCtrl.setCurrentState(trafficLightCtrl.getYellowState());
         trafficLightCtrl.nextState();
-        assertEquals(expected, trafficLightCtrl.getCurrentState().getClass());
+        State actual = trafficLightCtrl.getCurrentState();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -85,12 +89,20 @@ public class TrafficlightCtrlTest {
         trafficLightCtrl.setPreviousState(trafficLightCtrl.getYellowState()); //set previous state yellow
         trafficLightCtrl.nextState(); //change the state of the controller to the next one (must be yellow)
 
-        Class expected = new Yellow(trafficLightCtrl).getClass();
+        State expected = trafficLightCtrl.getYellowState();
+        State actual = trafficLightCtrl.getCurrentState();
 
-        assertEquals(expected, trafficLightCtrl.getCurrentState().getClass(), "The current " +
+        assertEquals(expected, actual, "The current " +
                 "state after Red must be Yellow.");
     }
 
-
+    @Test
+    @DisplayName("Test 6: Testing for red after the initial state off")
+    void testForRedAfterOff() {
+        trafficLightCtrl.nextState();
+        State expected = trafficLightCtrl.getRedState();
+        State actual = trafficLightCtrl.getCurrentState();
+        assertEquals(expected, actual);
+    }
 
 }
