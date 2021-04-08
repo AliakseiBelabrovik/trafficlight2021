@@ -112,52 +112,59 @@ public class TrafficLightGui extends JFrame implements ActionListener {
         }
     }
 
+    /**
+     * This method changes the light of the traffic light and
+     * uses a thread to make the yellow color blink.
+     * @param trafficLightColor - takes a colour of each state as a parameter to know
+     * which light to turn on.
+     */
     public void setLight(TrafficLightColor trafficLightColor){
         //TODO setLight
 
-        //thread to make the yellow light flash
+        //thread to make the yellow light blink
         Thread flashingYellowLight = new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("I am in thread");
+                //as long as the color is yellow, make the light blink
                 while (trafficLightCtrl.getCurrentState().getState() == TrafficLightColor.YELLOW) {
-                    System.out.println("I am in while loop");
+
                     try {
                         Thread.sleep(yellowIntervall);
                         yellow.turnOn(false);
                         Thread.sleep(yellowIntervall);
                         yellow.turnOn(true);
                     } catch (InterruptedException e) {
-                        //e.printStackTrace();
-                        System.out.println("Something went wring in the thread.");
+                        System.out.println("Something went wrong in the thread. -> leave the tread.");
                         break;
                     }
 
+                    //if the current state is not yellow - don't blink and leave the thread using break statement
                     if (trafficLightCtrl.getCurrentState().getState() != TrafficLightColor.YELLOW) {
                         yellow.turnOn(false);
-                        System.out.println("I leave the thread 2");
                         break;
                     }
                 }
             }
         });
 
+        //if the color must be yellow, turn it on and make it blink
         if (trafficLightColor == TrafficLightColor.YELLOW) {
             red.turnOn(false);
             green.turnOn(false);
             yellow.turnOn(true);
-            //start thread to make the yellow light flash
+
+            //start thread to make the yellow light blink
             flashingYellowLight.start();
+
+            //if green, turn the green light on
         } else if (trafficLightColor == TrafficLightColor.GREEN) {
             yellow.turnOn(false);
             green.turnOn(true);
+
+            //if red -> turn the red light on
         } else if (trafficLightColor == TrafficLightColor.RED) {
             yellow.turnOn(false);
             red.turnOn(true);
         }
-
-
-
-
     }
 }

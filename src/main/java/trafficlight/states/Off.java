@@ -2,6 +2,10 @@ package trafficlight.states;
 
 import trafficlight.ctrl.TrafficLightCtrl;
 
+/**
+ * The original state is OFF, because the traffic light is off
+ * Only after the button nextState or AutoMode was clicked, the state changes to the first light: RED.
+ */
 public class Off implements State {
     TrafficLightColor trafficLightColor;
     TrafficLightCtrl trafficLightCtrl;

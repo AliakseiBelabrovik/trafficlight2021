@@ -8,7 +8,10 @@ import trafficlight.states.TrafficLightColor;
 
 public class TrafficLightCtrl {
 
-    //static variable to implement Singleton - delete if not allowed to declare new instance variables
+    /**
+     * URL: https://github.com/AliakseiBelabrovik/trafficlight2021.git
+     * static variable to implement Singleton - delete if not allowed to declare new instance variables
+     */
     private static TrafficLightCtrl instance = null;
 
 
@@ -24,8 +27,9 @@ public class TrafficLightCtrl {
 
     private TrafficLightGui gui;
 
-    //make this private and add function getInstance to use the singleton
-    //make public again if not allowed to change
+    /**
+     * The constructor is private because we use Singleton pattern
+     */
     private TrafficLightCtrl() {
         super();
         initStates();
@@ -33,25 +37,37 @@ public class TrafficLightCtrl {
         gui.setVisible(true);
     }
 
-    //getInstance method to implement the Singleton
+    /**
+     * This method represents the implementation of the Singleton pattern, which is called in the main class,
+     * when we try to create a controller object. This pattern does not allow to create many objects of this class.
+     * @return - returns an instance of TrafficLightCtrl
+     */
     public static TrafficLightCtrl getInstance() {
         if (instance == null)
             instance = new TrafficLightCtrl();
         return instance;
     }
 
+    /**
+     * This void method uses the Factory Pattern (see StateFactory class) to create three states.
+     * Firstly, it creates an object of StateFactory class.
+     * Then, it takes the respective color and this (TrafficLightCtrl object) to create three states via
+     * the getState method of StateFactory class
+     */
     private void initStates() {
         //TODO create the states and set current and previous state
+
         ////initialize the factory pattern
         StateFactory stateFactory = new StateFactory();
+
         //use factory pattern and polymorphism to create the states
-        redState = stateFactory.getState(TrafficLightColor.RED, this); //vielleicht auch this übergeben
+        redState = stateFactory.getState(TrafficLightColor.RED, this);
         yellowState = stateFactory.getState(TrafficLightColor.YELLOW, this);
         greenState = stateFactory.getState(TrafficLightColor.GREEN, this);
 
-        //original state is off
-        setCurrentState(new Off(this));
-        setPreviousState(new Off(this));
+        //set Off state as an original state and previous state
+        setCurrentState(stateFactory.getState(TrafficLightColor.OFF, this));
+        setPreviousState(stateFactory.getState(TrafficLightColor.OFF, this));
 
     }
 
@@ -87,9 +103,13 @@ public class TrafficLightCtrl {
         gui.run();
     }
 
+    /**
+     * using the current state, we change the state with a nextState() method.
+     * Then it calls the setLight method of the GUI to set/change the light.
+     */
     public void nextState() {
         //TODO handle GUi request and update GUI
         currentState.nextState(); //change the state to the next one
-        gui.setLight(currentState.getState()); // get the color of the new state
+        gui.setLight(currentState.getState()); // get the color of the new state and set the light
     }
 }
